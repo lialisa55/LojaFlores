@@ -7,7 +7,35 @@ import {
   TextInput,
 } from 'react-native';
 
+import React, { useState, useEffect } from 'react';
+
+import Firebase from './FireBase';
+
 export default function Acesso() {
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  function logar() {
+    Firebase.auth().signInWithEmailAndPassword(email, senha)
+    .then(()=>{
+      if(user){
+        alert('Usuario não existe');
+        return;
+      }
+      navigation.navigate('Home', {email});
+    })
+    .catch((error)=>{
+    alert(error);
+    navigation.navigate('Acesso');
+    })
+  }
+
+  useEffect(()=>{
+    Firebase.auth().onAuthStateChanged( function(user){
+      const uid = user.uid;
+      const email = user.email;
+    });
+  }), [];
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.titulo}>Aplicativo de Flores</Text>
@@ -15,7 +43,7 @@ export default function Acesso() {
 
       <TextInput style={styles.input} placeholder="Digite o E-mail" />
       <TextInput style={styles.input} placeholder="Digite a senha" />
-      
+
       <TouchableOpacity style={styles.botao}>
         <Text style={styles.botaoTxt}>Acessar</Text>
       </TouchableOpacity>
@@ -60,10 +88,10 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     margin: 10,
     padding: 5,
-    textAlign: 'center'
+    textAlign: 'center',
   },
-  botaoTxt:{
+  botaoTxt: {
     fontSize: 18,
     color: 'white',
-  }
+  },
 });
