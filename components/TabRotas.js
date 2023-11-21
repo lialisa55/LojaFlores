@@ -11,7 +11,7 @@ export default function TabRotas() {
       <Stack.Screen
         name="Acesso"
         component={Acesso}
-        options={{ headerShow: true }}
+        options={{ headerShow: false }}
       />
       <Stack.Screen
         name="Home"

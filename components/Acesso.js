@@ -11,41 +11,72 @@ import React, { useState, useEffect } from 'react';
 
 import Firebase from './FireBase';
 
-export default function Acesso() {
+export default function Acesso({ navigation }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
-  function logar() {
-    Firebase.auth().signInWithEmailAndPassword(email, senha)
-    .then(()=>{
-      if(user){
-        alert('Usuario não existe');
-        return;
-      }
-      navigation.navigate('Home', {email});
-    })
-    .catch((error)=>{
-    alert(error);
-    navigation.navigate('Acesso');
-    })
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState();
+
+  function dados(user) {
+    setUser(user);
+    if (initializing) setInitializing(false);
   }
 
-  useEffect(()=>{
-    Firebase.auth().onAuthStateChanged( function(user){
+  function logar() {
+    Firebase.auth()
+      .signInWithEmailAndPassword(email, senha)
+      .then(() => {
+        if (user) {
+          alert('Usuario não existe');
+          return;
+        }
+        navigation.navigate('Home', { email });
+      })
+      .catch((error) => {
+        alert(error);
+        navigation.navigate('Acesso');
+      });
+  }
+
+  useEffect(() => {
+    Firebase.auth().onAuthStateChanged(function (user) {
       const uid = user.uid;
       const email = user.email;
     });
-  }), [];
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.titulo}>Aplicativo de Flores</Text>
       <Image style={styles.foto} source={require('../assets/flor.png')} />
 
-      <TextInput style={styles.input} placeholder="Digite o E-mail" />
-      <TextInput style={styles.input} placeholder="Digite a senha" />
+      <TextInput
+        style={styles.input}
+        onChangeText={(email) => setEmail(email)}
+        placeholder="Digite o E-mail"
+        value={email}
+      />
 
-      <TouchableOpacity style={styles.botao}>
+      <TextInput
+        style={styles.input}
+        placeholder="Digite a senha"
+        onChangeText={(senha) => setSenha(senha)}
+        value={senha}
+        secureTextEntry={true}
+      />
+
+      <TouchableOpacity
+        style={styles.botao}
+        onPress={() => {
+          logar();
+        }}>
         <Text style={styles.botaoTxt}>Acessar</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.botao}
+        onPress={() => navigation.navigate('Cadastro')}>
+        <Text style={styles.botaoTxt}>Registrar</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );

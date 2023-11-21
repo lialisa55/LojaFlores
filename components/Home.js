@@ -3,6 +3,7 @@ export default function Home() {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.paragraph}>
+      Jesus te ama irmão
       </Text>
     </SafeAreaView>
   );
